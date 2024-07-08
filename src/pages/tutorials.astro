@@ -1,0 +1,99 @@
+---
+import Layout from '../layouts/layout.astro';
+import { sanityClient } from 'sanity:client';
+import type { PostItem } from '../libs/PostItem';
+import { Image } from 'astro:assets';
+import { formatDate } from '../libs/formatDate';
+import { PortableText } from 'astro-portabletext';
+
+const posts: PostItem[] = await sanityClient.fetch(
+  '*[_type == "post" && category == "tutorials"]{"slug": slug.current, name, date, category, "image": image.asset->url, content}'
+);
+---
+
+<Layout title={posts[0].category}>
+  <section class="mb-[4rem]">
+    <div class="hero relative flex items-center justify-center">
+      <div class="overlay">
+        <div class="container">
+          <div class="mr-auto max-w-[700px]">
+            <h2 class="text-700 font-700 capitalize leading-[1.2]">
+              {posts[0].category}
+            </h2>
+
+            <a
+              class="mt-2 inline-block border-b-2 font-500 capitalize leading-3 text-white transition-colors duration-300 hover:text-primary-400"
+              href="/"
+            >
+              <i class="fa-solid fa-arrow-left"></i>
+              <span>go back</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mt-16">
+      <div class="md:grid md:grid-cols-2 md:gap-4">
+        {
+          posts.map((post) => (
+            <div class="mb-4 rounded-lg border-[1.5px] border-grey-200 md:mb-0">
+              <a href={`/blog/${post.slug}`}>
+                <Image
+                  src={post.image}
+                  alt={post.name}
+                  width={500}
+                  height={500}
+                  class="h-fit w-full rounded-t-lg"
+                />
+              </a>
+
+              <div class="px-4">
+                <div class="mb-4 mt-4 flex items-center justify-between md:mb-6">
+                  <span class="text-grey-200">{formatDate(post.date)}</span>
+                  <span class="text-primary-400">{post.category}</span>
+                </div>
+
+                <h2 class="mb-2 inline-block text-300 font-600">{post.name}</h2>
+
+                <article class="mb-4 line-clamp-3 text-grey-200">
+                  <PortableText value={post.content} />
+                </article>
+
+                <a
+                  class="mb-4 inline-block w-full rounded-lg bg-primary-400 px-4 py-3 text-center font-500"
+                  href={`/blog/${post.slug}`}
+                >
+                  Read More
+                </a>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    background-image: url(../assets/tutorials-bg.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    min-height: 60vh;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>

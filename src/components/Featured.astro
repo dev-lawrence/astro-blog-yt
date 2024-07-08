@@ -1,0 +1,109 @@
+---
+import { sanityClient } from 'sanity:client';
+import type { PostItem } from '../libs/PostItem';
+import { Image } from 'astro:assets';
+import { formatDate } from '../libs/formatDate';
+import { PortableText } from 'astro-portabletext';
+
+const posts: PostItem[] = await sanityClient.fetch(
+  '*[_type == "post" && featured] | order(_createdAt desc){"slug": slug.current, name, tags, date, "image": image.asset->url, content}'
+);
+---
+
+<section class="container">
+  <div class="mb-8">
+    <h2 class="text-500 font-500 md:text-650">Featured Posts</h2>
+  </div>
+
+  <div class="md:grid md:grid-cols-[1.5fr,1fr] md:gap-4">
+    <!-- Main image -->
+    <div>
+      {
+        posts[0] && (
+          <a
+            class="post relative mb-8 inline-block overflow-hidden rounded-lg"
+            href={`/blog/${posts[0].slug}`}
+          >
+            <div class="overlay absolute left-0 top-0 z-10 h-full w-full rounded-lg bg-black opacity-65 transition-opacity duration-500" />
+            <Image
+              class="h-fit w-full rounded-lg transition-transform duration-500"
+              width={700}
+              height={700}
+              src={posts[0].image}
+              alt={posts[0].name}
+            />
+
+            <div class="absolute bottom-4 left-0 z-20 w-full px-4">
+              <div>
+                <span class="mb-2 inline-block">
+                  {formatDate(posts[0].date)}
+                </span>
+                <h3 class="mb-2 text-200 font-600 md:text-400 lg:text-500">
+                  {posts[0].name}
+                </h3>
+                <ul class="mb-4 flex items-center justify-start gap-4">
+                  {posts[0].tags.map((tag, index) => (
+                    <li
+                      class={`rounded-full px-3 py-2 text-[.9rem] ${index % 2 === 0 ? 'bg-primary-400' : 'bg-[purple]'}`}
+                    >
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </a>
+        )
+      }
+    </div>
+
+    <!-- Other posts -->
+    <div class="lg:self-center">
+      {
+        posts.slice(1).map((post) => (
+          <div class="mb-8 rounded-lg border-[1.5px] md:mb-0 md:flex md:border-none">
+            <Image
+              src={post.image}
+              alt={post.name}
+              width={500}
+              height={500}
+              class="h-fit w-full rounded-t-lg object-cover md:size-[100px] md:rounded-lg"
+            />
+
+            <div class="p-4 md:pt-0">
+              <span class="mb-4 inline-block text-grey-200 md:mb-2">
+                {formatDate(post.date)}
+              </span>
+              <a href={`/blog/${post.slug}`}>
+                <h3 class="mb-2 text-200 transition-colors duration-300 hover:text-primary-400 md:text-100">
+                  {post.name}
+                </h3>
+              </a>
+
+              <article class="mb-4 line-clamp-3 text-grey-200 md:hidden">
+                <PortableText value={post.content} />
+              </article>
+
+              <a
+                class="inline-block w-full rounded-lg bg-primary-400 px-4 py-3 text-center font-500 md:w-fit md:bg-opacity-0 md:p-0 md:text-primary-400"
+                href={`/blog/${post.slug}`}
+              >
+                Read More
+              </a>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .post:hover img {
+    transform: scale(1.1);
+  }
+
+  .post:hover .overlay {
+    opacity: 0.75;
+  }
+</style>

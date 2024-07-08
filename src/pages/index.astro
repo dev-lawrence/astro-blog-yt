@@ -1,0 +1,24 @@
+---
+import Hero from '../components/Hero.astro';
+import Layout from '../layouts/layout.astro';
+import Featured from '../components/Featured.astro';
+import Categories from '../components/Categories.astro';
+import Newsletter from '../components/Newsletter';
+import Blog from '../components/Blog.astro';
+---
+
+<Layout title="Home page">
+  <Hero />
+
+  <!-- Featured -->
+  <Featured />
+
+  <!-- Categories -->
+  <Categories />
+
+  <!-- Blogs -->
+  <Blog />
+
+  <!-- Newsletter -->
+  <Newsletter client:visible />
+</Layout>

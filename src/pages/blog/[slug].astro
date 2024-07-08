@@ -1,0 +1,126 @@
+---
+import { sanityClient } from 'sanity:client';
+import type { PostItem } from '../../libs/PostItem';
+import { formatDate } from '../../libs/formatDate';
+import Layout from '../../layouts/layout.astro';
+import { Image } from 'astro:assets';
+import { PortableText } from 'astro-portabletext';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const slugs = await sanityClient.fetch(
+    `*[_type == "post"]{"params": {"slug": slug.current}}`
+  );
+
+  return slugs;
+}
+
+const { slug } = Astro.params;
+
+if (slug === undefined) {
+  throw new Error('Slug is requried');
+}
+
+// Fetch the each blog post from sanity by that slug
+const query = `*[_type == "post" && slug.current == $slug][0]{
+
+name,
+"slug": slug.current,
+"image": image.asset->url,
+date,
+tags,
+author,
+content,
+
+}`;
+
+const post: PostItem = await sanityClient.fetch(query, { slug });
+
+console.log(post);
+---
+
+<Layout title={post.name}>
+  <div class="hero relative flex items-center justify-center">
+    <div class="overlay">
+      <div class="container">
+        <div class="mr-auto max-w-[700px] pt-16">
+          <h2 class="text-700 font-700 leading-[1.2]">{post.name}</h2>
+
+          <a
+            class="mt-2 inline-block border-b-2 font-500 capitalize leading-3 text-white transition-colors duration-300 hover:text-primary-400"
+            href="/"
+          >
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>go back</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="container">
+    <div class="mx-auto mb-[5rem] mt-20 max-w-[800px]">
+      <Image
+        width={500}
+        height={500}
+        src={post.image}
+        class="mb-12 h-fit w-full rounded-lg"
+        alt={post.name}
+      />
+
+      <div class="mb-12">
+        <h1
+          class="mb-3 text-center text-700 font-700 leading-[1.2] md:text-800"
+        >
+          {post.name}
+        </h1>
+
+        <div class="mb-4 flex items-center justify-center gap-5">
+          <p class="text-200 text-primary-400">Written by {post.author}</p>
+          <span class="text-neutral-300">{formatDate(post.date)}</span>
+        </div>
+
+        <ul class="mb-4 flex items-center justify-center gap-4">
+          {
+            post.tags.map((tag, index) => (
+              <li
+                class={`rounded-full px-3 py-2 text-[.9rem] ${index % 2 === 0 ? 'bg-primary-400' : 'bg-[purple]'}`}
+              >
+                {tag}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <article class="prose prose-neutral lg:prose-xl dark:prose-invert">
+        <PortableText value={post.content} />
+      </article>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .hero {
+    background-image: url(../../assets/ai.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    min-height: 60vh;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>

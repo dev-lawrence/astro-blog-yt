@@ -1,0 +1,36 @@
+{
+  "name": "astro-blog-yt",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.7.0",
+    "@astrojs/netlify": "^5.3.5",
+    "@astrojs/react": "^3.6.0",
+    "@astrojs/tailwind": "^5.1.0",
+    "@sanity/astro": "^3.1.4",
+    "@sanity/client": "^6.20.1",
+    "@sanity/vision": "^3.49.0",
+    "@sanity/visual-editing": "^2.1.6",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "astro": "^4.11.3",
+    "astro-portabletext": "^0.10.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sanity": "^3.49.0",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.5.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.13",
+    "prettier-plugin-astro": "^0.14.0",
+    "prettier-plugin-tailwindcss": "^0.6.5"
+  }
+}

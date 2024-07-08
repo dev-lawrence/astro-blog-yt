@@ -1,0 +1,39 @@
+---
+import Category from '../components/Category.astro';
+import Dailydigest from '../assets/daily-digest.jpg';
+import DesignTools from '../assets/design-tools.jpg';
+import Tutorials from '../assets/tutorials.jpg';
+---
+
+<section class="container mt-12">
+  <div class="mx-auto mb-8 max-w-[650px] text-center">
+    <h2 class="mb-2 text-500 font-500 md:text-650">
+      Explore Our Featured Categories
+    </h2>
+    <p>
+      From daily inspiration to practical tutorials, find the resources you need
+      to fuel your creativity and growth.
+    </p>
+  </div>
+
+  <div class="md:grid md:grid-cols-3 md:gap-4">
+    <Category
+      link="daily-digest"
+      text="Daily digest"
+      image={Dailydigest}
+      category="daily digest"
+    />
+    <Category
+      link="design-tools"
+      text="Design Tools"
+      image={DesignTools}
+      category="design tools"
+    />
+    <Category
+      link="tutorials"
+      text="Tutorials"
+      image={Tutorials}
+      category="tutorials"
+    />
+  </div>
+</section>

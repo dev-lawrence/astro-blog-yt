@@ -1,0 +1,21 @@
+---
+import Layout from '../layouts/layout.astro';
+import ErrorImg from '../assets/404.png';
+import { Image } from 'astro:assets';
+---
+
+<Layout title="Page not found">
+  <div class="flex h-full items-center justify-center pt-16 text-center">
+    <div class="mb-8">
+      <Image
+        src={ErrorImg}
+        class="mx-auto mb-4 size-[400px] animate-bounce"
+        alt="Error Images"
+      />
+      <a
+        class="inline-block rounded-full bg-primary-400 px-4 py-2 text-center text-400 font-500"
+        href="/">Go to Homepage</a
+      >
+    </div>
+  </div>
+</Layout>
