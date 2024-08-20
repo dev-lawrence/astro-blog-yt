@@ -1,0 +1,42 @@
+---
+import { sanityClient } from 'sanity:client';
+import { formatDate } from '../libs/formatDate';
+
+const { postId } = Astro.props;
+
+interface Comment {
+  name: string;
+  email: string;
+  content: string;
+  createdAt: string;
+}
+
+const comments = await sanityClient.fetch(
+  `*[_type == "comment" && post._ref == $postId && isApproved == true] | order(createdAt desc){
+_id,
+name,
+content,
+createdAt,
+
+}`,
+  { postId }
+);
+---
+
+<div class="md:self-start md:justify-self-center md:pt-10">
+  {
+    comments.length === 0 ? (
+      <p>No comments yet. Be the first to comment</p>
+    ) : (
+      <ul>
+        {comments.map((comment: Comment) => (
+          <li>
+            <p>{comment.name}</p>
+            <p>{formatDate(comment.createdAt)}</p>
+            <p>{comment.content}</p>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</div>

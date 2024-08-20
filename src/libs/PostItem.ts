@@ -5,6 +5,7 @@ import type {
 } from "@portabletext/types";
 
 export interface PostItem {
+  _id?:string;
   name: string;
   slug: string;
   content: PortableTextBlock<
